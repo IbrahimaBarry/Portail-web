@@ -40,9 +40,10 @@ class SendNewsletters extends Command
      */
     public function handle()
     {
-        $emails = Newsletter::all();
-        foreach ($emails as $email) {
-            Mail::to($email)->send(new NewsletterEmail());
+        $newsletters = Newsletter::all();
+        foreach ($newsletters as $newsletter) {
+            $user = $newsletter->user;
+            Mail::to($user)->send(new NewsletterEmail($user));
         }
         $this->info('newsletters sended successfully');
     }

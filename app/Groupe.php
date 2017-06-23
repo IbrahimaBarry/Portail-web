@@ -20,9 +20,9 @@ class Groupe extends Model
     	return $this->hasMany('App\SousGroupe');
     }
 
-    public function keywords()
+    public function themes()
     {
-        return $this->belongsToMany('App\Keyword');
+        return $this->belongsToMany('App\Theme');
     }
 
     public function abonnement()

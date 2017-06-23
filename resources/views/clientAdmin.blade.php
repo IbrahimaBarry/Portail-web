@@ -29,7 +29,7 @@
 								<span class="icon"><i class="fa fa-users"></i></span>
 								<p>
 									<span class="number">{{ count($sousGroupes) }}</span>
-									<span class="title">Goupes</span>
+									<span class="title">Groupes créés</span>
 								</p>
 							</div>
 						</div>
@@ -82,10 +82,9 @@
 										@foreach ($sousGroupes as $sousGroupe)
 											<tr>	
 												<td class="col-md-3">{{ $sousGroupe->name }}</td>
-												<td class="col-md-3">{{ $sousGroupe->keywords }}</td>
+												<td class="col-md-3">{{ $sousGroupe->themes }}</td>
 												<td class="col-md-3">{{ count($sousGroupe->users) }}</td>
 												<td class="col-md-3">
-													<a href="{{ route('sousGroupes.destroy', ['id' => $sousGroupe->id]) }}" class="btn btn-primary btn-xs btn-toastr"><i class="fa fa-pencil fa-faw"></i></a>
 													<a href="{{ route('sousGroupes.destroy', ['id' => $sousGroupe->id]) }}" class="btn btn-danger btn-xs btn-toastr"><i class="fa fa-trash fa-faw"></i></a>
 												</td>
 											</tr>
@@ -125,7 +124,6 @@
 											<td>{{ $user->email }}</td>
 											<td>{{ $user->sousGroupe()->value('name') }}</td>
 											<td>
-												<a href="{{ route('users.destroy', ['id' => $user->id]) }}" class="btn btn-primary btn-xs btn-toastr"><i class="fa fa-pencil fa-faw"></i></a>
 												<a href="{{ route('users.destroy', ['id' => $user->id]) }}" class="btn btn-danger btn-xs btn-toastr"><i class="fa fa-trash fa-faw"></i></a>
 											</td>
 										</tr>
@@ -140,7 +138,7 @@
 					<!-- TIMELINE -->
 					<div class="panel panel-scrolling">
 						<div class="panel-heading">
-							<h3 class="panel-title">Mots clés</h3>
+							<h3 class="panel-title">Themes</h3>
 							<div class="right">
 								<button type="button" class="btn-toggle-collapse"><i class="lnr lnr-chevron-up"></i></button>
 								<button type="button" class="btn-remove"><i class="lnr lnr-cross"></i></button>
@@ -148,8 +146,8 @@
 						</div>
 						<div class="panel-body">
 							<ul class="list-unstyled">
-								@foreach ($groupe->keywords as $keyword)
-									<li><span>{{ $keyword->name }}</span>
+								@foreach ($groupe->themes as $theme)
+									<li><span>{{ $theme->name }}</span>
 								@endforeach
 							</ul>
 						</div>
@@ -187,32 +185,25 @@
 		                <input type="hidden" name="groupe_id" value="{{ $groupe->id }}">
 
 		                <div class="form-group">
-							<div class="panel panel-scrolling col-sm-3 col-sm-offset-5">
-								<div class="panel-heading">
-									<h5 class="panel-title">Liste des mots clés</h5>
-									<div class="right">
-										<button type="button" class="btn-toggle-collapse"><i class="lnr lnr-chevron-up"></i></button>
-									</div>
-								</div>
-								<div class="panel-body">
-									<ul class="list-unstyled">
-										<li>
-											<label class="fancy-checkbox">
-												<input type="checkbox" onClick="toggle(this)">
-												<span>Tous</span>
+							<label for="theme" class="col-sm-2 col-sm-offset-2 control-label">Themes</label>
+		                	<div class="col-sm-5">
+		                		<ul class="list-unstyled">
+									<li  style="display: block;float: left;margin-right: 16px;">
+										<label class="fancy-checkbox">
+											<input type="checkbox"  onClick="toggle(this)">
+											<span>Tous</span>
+										</label>
+									</li>
+									@foreach ($groupe->themes as $theme)
+				                		<li style="display: block;float: left;margin-right: 16px;">
+						                	<label class="fancy-checkbox">
+												<input type="checkbox" name="themes[]" value="{{ $theme->name }}">
+												<span>{{ $theme->name }}</span>
 											</label>
 										</li>
-										@foreach ($groupe->keywords as $keyword)
-					                		<li class="">
-							                	<label class="fancy-checkbox">
-													<input type="checkbox" name="tags[]" value="{{ $keyword->name }}">
-													<span>{{ $keyword->name }}</span>
-												</label>
-											</li>
-										@endforeach
-									</ul>
-								</div>
-							</div>
+									@endforeach
+								</ul>
+		                	</div>
 						</div>
 
 		                <div class="form-group">
@@ -296,7 +287,7 @@
 		                  <div class="col-sm-4">
 		                    <select class="form-control" name="role_id" required>
 		                    	<option disabled>--Selectionnez un role--</option>
-		                    	<option value="3">Client</option>
+		                    	<option value="3">Utilisateur</option>
 		                    	<option value="2">Admin</option>
 		                    </select>
 		                  </div>
@@ -337,7 +328,7 @@
 @section('javascript')
 	<script>
 		function toggle(source) {
-		  checkboxes = document.getElementsByName('tags[]');
+		  checkboxes = document.getElementsByName('themes[]');
 		  for(var i=0, n=checkboxes.length;i<n;i++) {
 		    checkboxes[i].checked = source.checked;
 		  }

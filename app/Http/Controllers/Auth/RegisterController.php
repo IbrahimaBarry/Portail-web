@@ -72,11 +72,11 @@ class RegisterController extends Controller
             'role_id' => $data['role_id'],
         ]);
 
-        if (isset($data['sous_groupe_id']))
-        {
-            $user->sous_groupe_id = $data['sous_groupe_id'];
-            $user->save();
-        }
+        // if (isset($data['sous_groupe_id']))
+        // {
+        //     $user->sous_groupe_id = $data['sous_groupe_id'];
+        //     $user->save();
+        // }
 
     }
 }

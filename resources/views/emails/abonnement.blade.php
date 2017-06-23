@@ -2,8 +2,8 @@
 # 10 jours Restantes !
 
 Votre abonnement à nos services expire dans 10 jours.<br>
-Veillez contacter au plus vite notre société pour éviter la coupure des services
+Veillez contacter notre société pour éviter l'arrêt prochain des services
 
-Merci,<br>
+Merci,
 {{ config('app.name') }}
 @endcomponent

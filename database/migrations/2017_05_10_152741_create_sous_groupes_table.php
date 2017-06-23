@@ -18,7 +18,7 @@ class CreateSousGroupesTable extends Migration
             $table->string('name');
             $table->integer('groupe_id')->unsigned();
             $table->foreign('groupe_id')->references('id')->on('groupes')->onUpdate('cascade')->onDelete('cascade');
-            $table->text('keywords');
+            $table->text('themes');
             $table->timestamps();
         });
     }

@@ -10,6 +10,7 @@
 					<li><a href="{{ route('groupes.create') }}"><i class="lnr lnr-plus-circle"></i><span> Ajouter un client</span></a></li>
 					<li><a href="{{ route('users.all') }}"><i class="lnr lnr-user"></i><span> Liste des utilisateurs</span></a></li>
 					<li><a href="{{ route('users.create') }}"><i class="lnr lnr-plus-circle"></i><span> Ajouter utilisateur</span></a></li>
+					<li><a href="{{ route('themes.index') }}"><i class="lnr lnr-tag"></i> <span>Gestion des themes</span></a></li>
 				</ul>
 			</nav>
 		</div>
@@ -29,18 +30,18 @@
 				<div class="profile-header">
 					<div class="overlay"></div>
 					<div class="profile-main">
-						<h3 class="name">{{ strtoupper($groupe->name) }}</h3>
+						<h3 class="name">{{ $groupe->name }}</h3>
 					</div>
 					<div class="profile-stat">
 						<div class="row">
 							<div class="col-md-4 stat-item">
-								{{ count($keywords) }} <span>Mot clés</span>
+								{{ count($groupe->themes) }} <span>Themes</span>
 							</div>
 							<div class="col-md-4 stat-item">
-								{{ count($users) }} <span>Comptes</span>
+								{{ count($sousGroupes) }} <span>Groupes créés</span>
 							</div>
 							<div class="col-md-4 stat-item">
-								0 <span>PDF téléchagés</span>
+								{{ count('$users') }} <span>Comptes créés</span>
 							</div>
 						</div>
 					</div>
@@ -73,11 +74,18 @@
 			<!-- LEFT COLUMN -->
 			<!-- RIGHT COLUMN -->
 			<div class="profile-right">
-				<div class="heading"><a href="{{ route('client.admin',['id'=>$groupe->id]) }}" class="btn btn-default">Espace administration du client</a></div>
+				<div class="heading">
+					<a href="{{ route('client.admin',['id'=>$groupe->id]) }}" class="btn btn-default">Espace administration du client</a>
+					@if ($groupe->newsletter === 0)
+						<a href="{{ route('newsletters', ['id' => $groupe->id]) }}" class="btn btn-primary pull-right">Activer la newslleter</a>
+					@else
+						<a href="{{ route('newsletters', ['id' => $groupe->id]) }}" class="btn btn-default pull-right">Désactiver la newslleter</a>
+					@endif
+				</div>
 				<!-- TABBED CONTENT -->
 				<div class="custom-tabs-line tabs-line-bottom left-aligned">
 					<ul class="nav" role="tablist">
-						<li class="active"><a href="#keyword" role="tab" data-toggle="tab">Mots clés</a></li>
+						<li class="active"><a href="#keyword" role="tab" data-toggle="tab">Themes</a></li>
 						<li><a href="#users" role="tab" data-toggle="tab">Comptes utilisateurs</a></li>
 						<li><a href="#groupes" role="tab" data-toggle="tab">Groupes</a></li>
 					</ul>
@@ -88,13 +96,13 @@
 							<table class="table project-table">
 								<thead>
 									<tr>
-										<th>Liste des mots clés du client</th>
+										<th>Liste des themes</th>
 									</tr>
 								</thead>
 								<tbody>
-									@foreach($keywords as $keyword)
+									@foreach($groupe->themes as $theme)
 										<tr>
-											<td>{{ $keyword->name }}</td>
+											<td>{{ $theme->name }}</td>
 										</tr>
 									@endforeach
 								</tbody>
@@ -109,6 +117,7 @@
 									<tr>
 										<th>Nom</th>
 										<th>E-mail</th>
+										<th>Rôle</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -116,6 +125,7 @@
 										<tr>
 											<td>{{ $user->name }}</td>
 											<td>{{ $user->email }}</td>
+											<td>{{ $user->role->name }}</td>
 										</tr>
 									@endforeach
 								</tbody>
@@ -130,7 +140,7 @@
 									<tr>
 										<th>Nom</th>
 										<th>Utilisateurs</th>
-										<th>Mots clés</th>
+										<th>Themes</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -138,7 +148,7 @@
 										<tr>
 											<td>{{ $sousGroupe->name }}</td>
 											<td>{{ count($sousGroupe->users) }}</td>
-											<td>{{ $sousGroupe->keywords }}</td>
+											<td></td>
 										</tr>
 									@endforeach
 								</tbody>
@@ -168,7 +178,7 @@
 						<div class="custom-tabs-line tabs-line-bottom left-aligned">
 							<ul class="nav" role="tablist">
 								<li class="active"><a href="#editBasic" role="tab" data-toggle="tab">Infos du client</a></li>
-								<li><a href="#editKeyword" role="tab" data-toggle="tab">Mots clés</a></li>
+								<li><a href="#editKeyword" role="tab" data-toggle="tab">Themes</a></li>
 								<li><a href="#abonnement" role="tab" data-toggle="tab">Abonnement</a></li>
 							</ul>
 						</div>
@@ -222,15 +232,33 @@
 
 							<div class="tab-pane fade" id="editKeyword">
 								<div class="form-group">
-				                  <label for="tel" class="col-sm-2 control-label">Mots clés</label>
+				                  <label for="tel" class="col-sm-2 control-label">Themes</label>
 
 				                  <div class="col-sm-10">
-				                    <input type="text" value="
-				                    <?php 
-				                    foreach ($keywords as $keyword) {
-				                    	echo $keyword->name.',';
-				                    } ?>" 
-				                    data-role="tagsinput" name="tags">
+				                    @foreach ($themes as $theme)
+				                    	@php $status = 0; @endphp
+
+				                    	@foreach ($groupe->themes as $themeGroupe)
+					                    	@if ($theme->id === $themeGroupe->id)
+						                		<li style="display: block;float: left;margin-right: 16px;">
+								                	<label class="fancy-checkbox">
+														<input type="checkbox" name="themes[]" value="{{ $theme->id }}" checked>
+														<span>{{ $theme->name }}</span>
+													</label>
+												</li>
+												@php $status = 1; @endphp
+											@endif
+										@endforeach
+
+										@if ($status === 0)
+											<li style="display: block;float: left;margin-right: 16px;">
+							                	<label class="fancy-checkbox">
+													<input type="checkbox" name="themes[]" value="{{ $theme->id }}">
+													<span>{{ $theme->name }}</span>
+												</label>
+											</li>
+										@endif
+									@endforeach
 				                  </div>
 				                </div>
 							</div>

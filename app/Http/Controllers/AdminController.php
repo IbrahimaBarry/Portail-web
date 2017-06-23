@@ -28,6 +28,10 @@ class AdminController extends Controller
     	return view('admin.dashboard', compact('nbrGroupe', 'nbrUser', 'indexed', 'nbrKeyword'));
     }
 
+    public function theme(){
+        return view('admin.theme');
+    }
+
     public function indexing(\Solarium\Client $client)
     {
         (new Solarium($client))->indexing();

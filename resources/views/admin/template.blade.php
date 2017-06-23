@@ -112,6 +112,16 @@
 			iziToast.success({
 			    title: 'OK',
 			    message: '<?php echo Session::get('success') ?>',
+			    position: 'topCenter',
+			});
+		</script>
+	@endif
+
+	@if (Session::has('info'))
+		<script type="text/javascript">
+			iziToast.info({
+			    title: 'Info',
+			    message: '<?php echo Session::get('info') ?>',
 			    position: 'topRight',
 			});
 		</script>

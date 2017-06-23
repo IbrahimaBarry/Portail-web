@@ -6,20 +6,22 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Message;
+use App\User;
 
 class NewsletterEmail extends Mailable
 {
     use Queueable, SerializesModels;
+
+    public $user;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(User $user)
     {
-        //
+        $this->user = $user;
     }
 
     /**
@@ -29,7 +31,6 @@ class NewsletterEmail extends Mailable
      */
     public function build()
     {
-        $message = Message::first()->message;
-        return $this->markdown('emails.newsletter', compact('message'));
+        return $this->markdown('emails.newsletter');
     }
 }

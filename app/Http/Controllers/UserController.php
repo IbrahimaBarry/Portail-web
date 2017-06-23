@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Carbon\carbon;
 use Gate;
 use Illuminate\Support\Facades\Auth;
+use App\Permission;
 
 class UserController extends Controller
 {
@@ -40,7 +41,7 @@ class UserController extends Controller
         }
 
         $groupes = Groupe::all();
-
+        $permissions = Permission::all();
         return view('admin.createUser', compact('groupes'));
     }
 
@@ -57,7 +58,7 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Vous n êtes pas autorisé à éffectuer cette action');
         }
 
-        $user = User::find($id);
+        $user = User::findOrFail($id);
         $keywords = $user->groupe()->first()->keywords;
         return view('admin.profil', compact('user', 'keywords'));
     }
@@ -76,7 +77,7 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Vous n êtes pas autorisé à éffectuer cette action');
         }
 
-        $user = User::find($id);
+        $user = User::findOrFail($id);
         $user->email = $request['email'];
         $user->tel = $request['tel'];
         $user->address = $request['address'];
@@ -112,7 +113,7 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Vous n êtes pas autorisé à éffectuer cette action');
         }
 
-        $user = User::find($id);
+        $user = User::findOrFail($id);
         $user->delete();
         
         return redirect()->back()->with('success', 'Le client a été supprimer avec succès');

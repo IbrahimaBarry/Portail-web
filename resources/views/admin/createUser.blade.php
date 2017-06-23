@@ -10,6 +10,7 @@
 					<li><a href="{{ route('groupes.create') }}"><i class="lnr lnr-plus-circle"></i><span> Ajouter un client</span></a></li>
 					<li><a href="{{ route('users.all') }}"><i class="lnr lnr-user"></i><span> Liste des utilisateurs</span></a></li>
 					<li><a href="{{ route('users.create') }}" class="active"><i class="lnr lnr-plus-circle"></i><span> Ajouter utilisateur</span></a></li>
+					<li><a href="{{ route('themes.index') }}"><i class="lnr lnr-tag"></i> <span>Gestion des themes</span></a></li>
 				</ul>
 			</nav>
 		</div>
@@ -24,7 +25,7 @@
 	<div class="col-md-9 col-md-offset-1">
 		<div class="panel">
 			<div class="panel-heading">
-				<h3 class="panel-title">Ajouter un nouveau client</h3>
+				<h3 class="panel-title">Ajouter un utilisateur</h3>
 			</div>
 			<div class="panel-body">
 				<form class="form-horizontal role="form" method="POST" action="{{ route('register') }}">
@@ -87,7 +88,7 @@
 	                  <label for="role" class="col-sm-2 control-label">Groupe</label>
 
 	                  <div class="col-sm-4">
-	                    <select class="form-control" name="role_id" required>
+	                    <select class="form-control" name="groupe_id" required>
 	                    	<option disabled>--Selectionnez un groupe--</option>
 	                    	@foreach ($groupes as $groupe)
 	                    		<option value="{{ $groupe->id }}">{{ $groupe->name }}</option>
@@ -104,12 +105,10 @@
 	                    	<option disabled>--Selectionnez un role--</option>
 	                    	<option value="1">Super Admin</option>
 	                    	<option value="2">Admin</option>
-	                    	<option value="3">Client</option>
+	                    	<option value="3">Utilisateur</option>
 	                    </select>
 	                  </div>
 	                </div>
-
-	                <input type="hidden" name="groupe_id" value="1">
 
 	                <div class="form-group">
 	                    <div class="col-md-6 col-md-offset-4">

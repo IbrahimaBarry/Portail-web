@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use Illuminate\Support\Facades\Auth;
+use App\Repositories\GetKeywords;
 
 /**
 * 
@@ -23,17 +24,9 @@ class Articles
 
 		if (Auth::user()->groupe->id === 1)
     			$querySearched = '"*:* ';
-    	elseif (Auth::user()->role->name === 'Admin') {
-    		foreach(Auth::user()->groupe->keywords as $keyword){
-				$querySearched .= '"'.$keyword->name.'" ';
-			}
-    	}
-    	else {
-    		$keywords = explode(',', Auth::user()->sousGroupe->keywords);
-    		foreach($keywords as $keyword){
-				$querySearched .= '"'.$keyword.'" ';
-			}
-    	}    		
+  
+    	else
+			$querySearched = (new GetKeywords(Auth::user()))->get();
 		/*
 		}*/
 			
@@ -47,8 +40,9 @@ class Articles
 		// get a select query instance
 		$query = $this->client->createSelect();
 
-		$query->setFields(['id','Title', 'Fulltext','document', 'Source', 'SourceDate','Author']);
+		$query->setFields(['id','Title', 'Fulltext','document', 'Source', 'SourceDate','Author', 'ArticleLanguage']);
 
+		$query->setStart(0)->setRows(17);
 
 		// get the dismax component and set a boost query
 		$edismax = $query->getEDisMax();
@@ -67,21 +61,47 @@ class Articles
 		$hl->setSnippets(5);
 		$hl->setFields(array('Title', 'Fulltext'));
 
-		$hl->setSimplePrefix('<strong>');
+		$hl->setSimplePrefix('<strong class="mdl-color-text--primary">');
 		$hl->setSimplePostfix('</strong>');
 
 		return $query;
 
 	}
 
-
 	/**
-	 * @param Illuminate\Http\Request $request
 	 * @return array $resultset
 	*/
 	public function index()
 	{
 		$query = Articles::init();
+
+		// this executes the query and returns the result
+		return $resultset = $this->client->select($query);
+	}
+
+	/**
+	 * @return array $resultset
+	*/
+	public function sort($data) {
+		$query = Articles::init();
+		$helper = $query->getHelper();
+
+		if ($data === "récents")
+			$query->addSort('SourceDate', $query::SORT_DESC);
+		elseif ($data === "anciens")
+			$query->addSort('SourceDate', $query::SORT_ASC);
+		elseif ($data === "pertinents")
+			$query->addSort('score', $query::SORT_DESC);
+		elseif (substr($data, 0, 6) === 'langue') {
+			$query->createFilterQuery('language')->setQuery('ArticleLanguage:"'.$helper->escapePhrase(substr($data, 7)).'"');
+		}
+		elseif (substr($data, 0, 4) === 'date') {
+			$date = substr($data, 5);
+			$query->createFilterQuery('date')->setQuery('SourceDate:'.$helper->escapePhrase($date));
+		}
+		else
+			$query->createFilterQuery(substr($data, 0, 6))->setQuery(ucfirst(substr($data, 0, 6)).':'.$helper->escapePhrase(substr($data, 7)));
+		
 
 		// this executes the query and returns the result
 		return $resultset = $this->client->select($query);

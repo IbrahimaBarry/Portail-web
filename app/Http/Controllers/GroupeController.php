@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Groupe;
-use App\Keyword;
+use App\Theme;
 use App\User;
 use App\Abonnement;
 use Gate;
@@ -38,8 +38,9 @@ class GroupeController extends Controller
         }
 
         $groupes = Groupe::all();
+        $themes = Theme::all();
 
-        return view('admin.createGroupe', compact('groupes'));
+        return view('admin.createGroupe', compact('groupes', 'themes'));
     }
 
     /**
@@ -58,15 +59,7 @@ class GroupeController extends Controller
 
         $groupe->save();
 
-        $request['tags'] = explode( ',', $request['tags']);
-        $keywords_id = [];
-        foreach ($request['tags'] as $val)
-        {
-            $keyword = Keyword::firstOrCreate(['name' => $val]);
-            array_push($keywords_id, $keyword->id);
-        }
-
-        $groupe->keywords()->attach($keywords_id === null ? [] : $keywords_id);
+        $groupe->themes()->attach($request['themes'] === null ? [] : $request['themes']);
 
         Abonnement::insert([
             'start_date' => $request['start_date'],
@@ -98,12 +91,12 @@ class GroupeController extends Controller
             return redirect()->back()->with('error', 'Vous n êtes pas autorisé à éffectuer cette action');
         }
 
-        $groupe = Groupe::find($id);
+        $groupe = Groupe::findOrFail($id);
         $users = $groupe->users;
         $sousGroupes = $groupe->sousGroupes;
-        $keywords = $groupe->keywords;
+        $themes = Theme::all();
 
-        return view('admin.groupeInfo', compact('groupe', 'keywords', 'users', 'sousGroupes'));
+        return view('admin.groupeInfo', compact('groupe', 'themes', 'users', 'sousGroupes'));
     }
 
     /**
@@ -131,21 +124,14 @@ class GroupeController extends Controller
             return redirect()->back()->with('error', 'Vous n êtes pas autorisé à éffectuer cette action');
         }
 
-        $groupe = Groupe::find($id);
+        $groupe = Groupe::findOrFail($id);
         $groupe->nbrUser = $request['nbrUser'];
         $groupe->tel = $request['tel'];
         $groupe->address = $request['address'];
         $groupe->abonnement->update(['end_date' => $request['end_date']]);
 
-        $request['tags'] = explode( ',', $request['tags']);
-        $keywords_id = [];
-        foreach ($request['tags'] as $val)
-        {
-            $keyword = Keyword::firstOrCreate(['name' => $val]);
-            array_push($keywords_id, $keyword->id);
-        }
-        $groupe->keywords()->detach();
-        $groupe->keywords()->attach($keywords_id === null ? [] : $keywords_id);
+        $groupe->themes()->detach();
+        $groupe->themes()->attach($request['themes'] === null ? [] : $request['themes']);
 
         $groupe->updated_at = Carbon::now();
 
@@ -167,7 +153,7 @@ class GroupeController extends Controller
             return redirect()->back()->with('error', 'Vous n êtes pas autorisé à éffectuer cette action');
         }
 
-        $groupe = Groupe::find($id);
+        $groupe = Groupe::findOrFail($id);
         $groupe->delete();
 
         return redirect()->route('groupes.index')->with('success', 'Le client a été supprimer avec succès');
@@ -175,7 +161,7 @@ class GroupeController extends Controller
 
     public function admin($id)
     {
-        $groupe = Groupe::find($id);
+        $groupe = Groupe::findOrFail($id);
         $sousGroupes = $groupe->sousGroupes;
         $users = $groupe->users;
 

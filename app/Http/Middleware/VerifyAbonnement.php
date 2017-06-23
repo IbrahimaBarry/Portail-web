@@ -19,7 +19,7 @@ class VerifyAbonnement
     public function handle($request, Closure $next)
     {
         $user = Auth::user();
-        $groupe = Groupe::find($user->groupe);
+        $groupe = Groupe::findOrFail($user->groupe);
 
         if ($groupe->id === 1)
             return $next($request);

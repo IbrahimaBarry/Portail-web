@@ -10,6 +10,7 @@
 					<li><a href="{{ route('groupes.create') }}"><i class="lnr lnr-plus-circle"></i><span> Ajouter un client</span></a></li>
 					<li><a href="{{ route('users.all') }}" class="active"><i class="lnr lnr-user"></i><span> Liste des utilisateurs</span></a></li>
 					<li><a href="{{ route('users.create') }}"><i class="lnr lnr-plus-circle"></i><span> Ajouter utilisateur</span></a></li>
+					<li><a href="{{ route('admin.theme') }}"><i class="lnr lnr-tag"></i> <span>Gestion des themes</span></a></li>
 				</ul>
 			</nav>
 		</div>
@@ -36,6 +37,7 @@
 							<th>Nom</th>
 							<th>E-Mail</th>
 							<th>Client</th>
+							<th>Action</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -46,6 +48,9 @@
 									</td>
 									<td>{{ $user->email }}</td>
 									<td>{{ $user->groupe->name }}</td>
+									<td>
+										<a href="{{ route('users.destroy', ['id' => $user->id]) }}" class="btn btn-danger btn-xs btn-toastr"><i class="fa fa-trash fa-faw"></i></a>
+									</td>
 								</tr>
 							@else
 								<tr>	
@@ -56,6 +61,9 @@
 										<a href="{{ route('groupes.show', ['id' => $user->groupe->id]) }}">
 											{{ $user->groupe->name }}
 										</a>
+									</td>
+									<td>
+										<a href="{{ route('users.destroy', ['id' => $user->id]) }}" class="btn btn-danger btn-xs btn-toastr"><i class="fa fa-trash fa-faw"></i></a>
 									</td>
 								</tr>
 							@endif

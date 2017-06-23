@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Repositories\Solarium;
 use App\Repositories\Articles;
+use Illuminate\Support\Facades\Auth;
+use App\Theme;
 
 class HomeController extends Controller
 {
@@ -33,7 +35,39 @@ class HomeController extends Controller
         $facet2 = $resultset->getFacetSet()->getFacet('author');
         $facet3 = $resultset->getFacetSet()->getFacet('source');
 
-        return view('home', compact('resultset', 'facet1', 'facet2', 'facet3'));
+        $user = Auth::user();
+        if ($user->groupe->id === 1) {
+            $themes = Theme::all();
+        } 
+        elseif ($user->role->name === 'Admin') {
+            $themes = $user->groupe->themes;
+        }
+        else {
+            $themes = explode(',', $user->sousGroupe->keywords);
+        }
+
+        return view('home', compact('resultset', 'facet1', 'facet2', 'facet3', 'themes'));
+    }
+
+    public function sort($data)
+    {
+        $resultset = (new Articles($this->client))->sort($data);
+        $facet1 = $resultset->getFacetSet()->getFacet('language');
+        $facet2 = $resultset->getFacetSet()->getFacet('author');
+        $facet3 = $resultset->getFacetSet()->getFacet('source');
+
+        $user = Auth::user();
+        if ($user->role->name === 'SuperAdmin') {
+            $themes = Theme::all();
+        } 
+        elseif ($user->role->name === 'Admin') {
+            $themes = $user->groupe->themes;
+        }
+        else {
+            $themes = explode(',', $user->sousGroupe->keywords);
+        }
+
+        return view('home', compact('resultset', 'facet1', 'facet2', 'facet3', 'themes'));   
     }
 
     public function search(Request $request)
@@ -43,30 +77,41 @@ class HomeController extends Controller
         $facet2 = $resultset->getFacetSet()->getFacet('author');
         $facet3 = $resultset->getFacetSet()->getFacet('source');
 
+        $user = Auth::user();
+        if ($user->role->name === 'SuperAdmin') {
+            $themes = Theme::all();
+        } 
+        elseif ($user->role->name === 'Admin') {
+            $themes = $user->groupe->themes;
+        }
+        else {
+            $themes = explode(',', $user->sousGroupe->keywords);
+        }
+
         $search = $request->data;
 
-        return view('search', compact('resultset', 'search', 'facet1', 'facet2', 'facet3'));   
+        return view('search', compact('resultset', 'search', 'facet1', 'facet2', 'facet3', 'themes'));   
     }
 
-    public function filter($data)
+    public function show($id)
     {
-        $resultset = (new Articles($this->client))->search($data);
+        $resultset = (new Articles($this->client))->show($id);
         $facet1 = $resultset->getFacetSet()->getFacet('language');
         $facet2 = $resultset->getFacetSet()->getFacet('author');
         $facet3 = $resultset->getFacetSet()->getFacet('source');
 
-        $search = $data;
+        $user = Auth::user();
+        if ($user->role->name === 'SuperAdmin') {
+            $themes = Theme::all();
+        } 
+        elseif ($user->role->name === 'Admin') {
+            $themes = $user->groupe->themes;
+        }
+        else {
+            $themes = explode(',', $user->sousGroupe->keywords);
+        }
 
-        return view('search', compact('resultset', 'search', 'facet1', 'facet2', 'facet3'));   
-    }
-
-    public function show(Request $request)
-    {
-        $folderPdfs = "Articles";
-
-        $resultset = (new Articles($this->client))->show($request->id);
-
-        return view('article', compact('resultset', 'folderPdfs'));
+        return view('article', compact('resultset', 'search', 'facet1', 'facet2', 'facet3', 'themes'));
     }
 
     public function download(Request $request)

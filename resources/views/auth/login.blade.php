@@ -76,6 +76,7 @@
                         <div class="overlay"></div>
                         <div class="content text">
                             <h1 class="heading">I-MEDIA</h1>
+                            <h3>Portail de surveillance des médias</h3>
                             <p>by OxData</p>
                         </div>
                     </div>

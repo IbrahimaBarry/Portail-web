@@ -10,6 +10,7 @@
 					<li><a href="{{ route('groupes.create') }}" class="active"><i class="lnr lnr-plus-circle"></i><span> Ajouter un client</span></a></li>
 					<li><a href="{{ route('users.all') }}"><i class="lnr lnr-user"></i><span> Liste des utilisateurs</span></a></li>
 					<li><a href="{{ route('users.create') }}"><i class="lnr lnr-plus-circle"></i><span> Ajouter utilisateur</span></a></li>
+					<li><a href="{{ route('themes.index') }}"><i class="lnr lnr-tag"></i> <span>Gestion des themes</span></a></li>
 				</ul>
 			</nav>
 		</div>
@@ -90,14 +91,6 @@
 	                  </div>
 	                </div>
 
-	                <div class="form-group">
-	                  <label for="tel" class="col-sm-2 control-label">Mots clés</label>
-
-	                  <div class="col-sm-10">
-	                    <input type="text" value="" data-role="tagsinput" class="form-control" name="tags">
-	                  </div>
-	                </div>
-
 	                <div class="form-group{{ $errors->has('start_date') ? ' has-error' : '' }}">
 	                  <label for="start_date" class="col-sm-2 control-label">Début de l'abonnement</label>
 
@@ -144,6 +137,36 @@
 	                  </div>
 	                </div>
 
+	                <!-- <div class="form-group">
+	                  <label for="tel" class="col-sm-2 control-label">Mots clés</label>
+
+	                  <div class="col-sm-10">
+	                    <input type="text" value="" data-role="tagsinput" class="form-control" name="tags">
+	                  </div>
+	                </div> -->
+
+	                <div class="form-group">
+	                	<label for="theme" class="col-sm-2 control-label">Themes</label>
+	                	<div class="col-sm-10">
+	                		<ul class="list-unstyled">
+								<li  style="display: block;float: left;margin-right: 16px;">
+									<label class="fancy-checkbox">
+										<input type="checkbox"  onClick="toggle(this)">
+										<span>Tous</span>
+									</label>
+								</li>
+								@foreach ($themes as $theme)
+			                		<li style="display: block;float: left;margin-right: 16px;">
+					                	<label class="fancy-checkbox">
+											<input type="checkbox" name="themes[]" value="{{ $theme->id }}">
+											<span>{{ $theme->name }}</span>
+										</label>
+									</li>
+								@endforeach
+							</ul>
+	                	</div>
+	                </div>
+
 	                <div class="form-group">
 	                    <div class="col-md-6 col-md-offset-4">
 	                        <button type="submit" class="btn btn-primary btn-toastr">Ajouter</button>
@@ -157,5 +180,12 @@
 @endsection
 
 @section('javascript')
-	<script type="text/javascript" src="/js/bootstrap-tagsinput.min.js"></script>
+	<script>
+		function toggle(source) {
+		  checkboxes = document.getElementsByName('themes[]');
+		  for(var i=0, n=checkboxes.length;i<n;i++) {
+		    checkboxes[i].checked = source.checked;
+		  }
+		}
+	</script>
 @endsection

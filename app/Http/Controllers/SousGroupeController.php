@@ -19,7 +19,7 @@ class SousGroupeController extends Controller
         $sousGroupe = new SousGroupe();
         $sousGroupe->name = $request['name'];
         $sousGroupe->groupe_id = $request['groupe_id'];
-        $sousGroupe->keywords = implode(',', $request['tags']);
+        $sousGroupe->themes = implode(',', $request['themes']);
 
         $sousGroupe->save();
 
@@ -35,8 +35,8 @@ class SousGroupeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $sousGroupe = SousGroupe::find($id);
-        $sousGroupe->keywords = implode(',', $request['tags']);
+        $sousGroupe = SousGroupe::findOrFail($id);
+        $sousGroupe->themes = implode(',', $request['themes']);
 
         $sousGroupe->save();
 
@@ -51,7 +51,7 @@ class SousGroupeController extends Controller
      */
     public function destroy($id)
     {
-        $sousGroupe = SousGroupe::find($id);
+        $sousGroupe = SousGroupe::findOrFail($id);
         $sousGroupe->delete();
 
         return redirect()->back()->with('success', 'Le groupe a été supprimer avec succès');

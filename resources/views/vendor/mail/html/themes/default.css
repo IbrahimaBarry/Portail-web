@@ -15,6 +15,13 @@ body {
     -webkit-text-size-adjust: none;
 }
 
+hr {
+    margin-top: 23px;
+    height: 2px;
+    width: 100%;
+    background: rgb(24, 64, 88);
+}
+
 p,
 ul,
 ol,
@@ -25,6 +32,7 @@ blockquote {
 
 a {
     color: #3869D4;
+    text-decoration: none;
 }
 
 a img {
@@ -103,7 +111,7 @@ img {
 
 .header a {
     color: #bbbfc3;
-    font-size: 19px;
+    font-size: 20px;
     font-weight: bold;
     text-decoration: none;
     text-shadow: 0 1px 0 white;
@@ -112,7 +120,7 @@ img {
 /* Body */
 
 .body {
-    background-color: #FFFFFF;
+    background-color: rgb(245,248,250);
     border-bottom: 1px solid #EDEFF2;
     border-top: 1px solid #EDEFF2;
     margin: 0;

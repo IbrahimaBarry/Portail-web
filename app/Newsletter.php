@@ -6,5 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Newsletter extends Model
 {
-	protected $fillable = ['email'];
+	protected $fillable = ['user_id'];
+
+	public function user() {
+		return $this->belongsTo('App\User');
+	}
 }

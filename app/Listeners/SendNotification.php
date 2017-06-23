@@ -28,7 +28,7 @@ class SendNotification
      */
     public function handle(Notification $event)
     {
-        $users = User::where('groupe_id', '=!', 1)->get();
+        $users = User::where('groupe_id', '!=', 1)->get();
         foreach ($users as $user) {
             $user->notify(new Alert());
         }

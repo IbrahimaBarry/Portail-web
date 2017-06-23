@@ -14,9 +14,9 @@ class Keyword extends Model
         'updated' => Events\Notification::class
     ];
 
-    public function goupes()
+    public function themes()
     {
-    	return $this->belongsToMany('App\Groupe');
+    	return $this->belongsToMany('App\Theme');
     }
 
     public function newsletters()
